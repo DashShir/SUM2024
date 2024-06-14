@@ -1,19 +1,24 @@
-/* Shiryaeva Daria, 08-4, 24.04.2024, DS4 */
+/* Shiryaeva Daria, 08-4, 04.06.2024, DS4 */
+
+/* FILE NAME: t02eyes.c
+ * PROGRAMMER: DS4
+ * LAST UPDATE: 07.06.2024
+ * PURPOSE: One eye consists two circles - smaller and bigger. Smaller eye will turn in the bigger where does cursor go
+ */
 
 #include <windows.h>
 #include <math.h>
 
 #define WND_CLASS_NAME "My window class"
 
-/* MyWindoWFunc description */
+/* Forward references */
 LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, 
                                WPARAM wParam, LPARAM lParam );
-/* Drawing eye function description */
 VOID DrawEye( HDC hDC, INT X, INT Y, INT R, INT R1, INT Mx, INT My );
 
-
+/* Main program function */
 INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                   CHAR *CmdLine, INT ShowCmd )
+                    CHAR *CmdLine, INT ShowCmd )
 {
   WNDCLASS wc;
   HWND hWnd = NULL;
@@ -28,8 +33,8 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
   wc.cbClsExtra = 0;
   wc.cbWndExtra = 0;
   wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
-  wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-  wc.hIcon = LoadIcon(NULL, IDI_SHIELD);
+  wc.hCursor = LoadCursor(NULL, IDC_HAND);
+  wc.hIcon = LoadIcon(NULL, IDI_WINLOGO);
   wc.lpszMenuName = NULL;
   wc.hInstance = hInstance;
   wc.lpfnWndProc = MyWindowFunc;
@@ -61,56 +66,95 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
     DispatchMessage(&msg);
   }
   return msg.wParam;
-}
+} /* End of 'WinMain' function */
 
+/* Main window message handle function */
 LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
                                WPARAM wParam, LPARAM lParam )
 {
   INT i, j;
   HDC hDC;
   PAINTSTRUCT ps;
+  HBRUSH hBr, hOldBr;
   POINT pt;
+  static HDC hMemDC;
   static INT w, h;
+  static HBITMAP hBm;
 
   switch (Msg)
   {
   case WM_CREATE:
+    hDC = GetDC(hWnd);
+    hMemDC = CreateCompatibleDC(hDC);
+    ReleaseDC(hWnd, hDC);
+    hBm = NULL;
     SetTimer(hWnd, 30, 30, NULL);
     return 0;
   case WM_SIZE:
     w = LOWORD(lParam);
     h = HIWORD(lParam);
-    return 0;
-  case WM_DESTROY:
-    KillTimer(hWnd, 30);
-    PostQuitMessage(0);
+    if (hBm != NULL)
+      DeleteObject(hBm);
+    hDC = GetDC(hWnd);
+    hBm = CreateCompatibleBitmap(hDC, w, h);
+    ReleaseDC(hWnd, hDC);
+    SelectObject(hMemDC, hBm);
+    SendMessage(hWnd, WM_TIMER, 0, 0);
     return 0;
   case WM_TIMER:
-    InvalidateRect(hWnd, NULL, FALSE);
-    return 0;
-  case WM_PAINT:
-    hDC = BeginPaint(hWnd, &ps);
+    hBr = CreateSolidBrush(RGB(0, 100, 30));
+    hOldBr = SelectObject(hMemDC, hBr);
+    Rectangle(hMemDC, 0, 0, w + 1, h + 1);
 
+    InvalidateRect(hWnd, NULL, FALSE);
     GetCursorPos(&pt);
     ScreenToClient(hWnd, &pt);
-    DrawEye(hDC, 400, 300, 90, 30, pt.x, pt.y);
-
     srand(30);
     if (GetAsyncKeyState(VK_SHIFT) & 0x8000)
       for (i = 0; i < 47; i++)
-        DrawEye(hDC, rand() % 1000, rand() % 1000, 47, 18, pt.x, pt.y);
+        DrawEye(hMemDC, rand() % 1000, rand() % 1000, 47, 18, pt.x, pt.y);
     else
       for (i = 0; i < h; i += 100)
         for (j = 0; j < w; j += 100)
-          DrawEye(hDC, j, i, 47, 18, pt.x, pt.y);
+          DrawEye(hMemDC, j, i, 47, 18, pt.x, pt.y);
 
+    return 0;
+  case WM_PAINT:
+    hDC = BeginPaint(hWnd, &ps);
+    BitBlt(hDC, 0, 0, w, h, hMemDC, 0, 0, SRCCOPY);
     EndPaint(hWnd, &ps);
+    return 0;
+  case WM_ERASEBKGND:
+    return 0;
+  case WM_DESTROY:
+    if (hBm != NULL)
+      DeleteObject(hBm);
+    DeleteDC(hMemDC);
+    KillTimer(hWnd, 30);
+    PostQuitMessage(0);
     return 0;
   }
   return DefWindowProc(hWnd, Msg, wParam, lParam);
-}
+} /* End of 'MyWindowFunc' function */
 
-VOID DrawEye( HDC hDC, INT X, INT Y, INT R, INT R1, INT Mx, INT My )
+
+/* Drawing one eye function. 
+ * ARGUMENTS:
+ *  -...
+ *    HDC hDC;
+ *  -eye coordinates
+ *    INT X, INT Y;
+ *  -radiuses
+ *    INT R, INT R1;
+ *  -cursor coordinates
+ *    INT Mx, INT My;
+ * RETURNS:
+ *  VOID;
+ */
+VOID DrawEye( HDC hDC,
+              INT X, INT Y,
+              INT R, INT R1,
+              INT Mx, INT My )
 {
   HBRUSH hBr, hOldBr;
   HPEN hPen, hOldPen;
@@ -148,4 +192,6 @@ VOID DrawEye( HDC hDC, INT X, INT Y, INT R, INT R1, INT Mx, INT My )
   DeleteObject(hBr);
   SelectObject(hDC, hOldPen);
   DeleteObject(hPen);
-}
+} /* End of 'DrawEye' function */
+
+/* End of 't02eyes.c' file */
