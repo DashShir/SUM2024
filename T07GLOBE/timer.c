@@ -20,11 +20,10 @@ static LONG
   OldTime,              /* Old time */
   PauseTime,            /* Pause time */
   OldFPSTime,           /* Old frame per second value */
-  FrameCount;           /*  */
+  FrameCount;           /* ... */
 
 /* Timer initialisation function.
- * ARGUMENTS:
- *   None. 
+ * ARGUMENTS: None. 
  * RETURNS: None.
  */
 VOID GLB_TimerInit( VOID )

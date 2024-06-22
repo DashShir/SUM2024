@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="T07GLOBE"
-	ProjectGUID="{D1A31309-C06A-4A88-A847-AD63928DB5BC}"
-	RootNamespace="T07GLOBE"
+	Name="T08ANIM"
+	ProjectGUID="{BD019BD4-A393-47A7-9B8F-3504F613010F}"
+	RootNamespace="T08ANIM"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="X:\TGRKIT\INCLUDE;$(OPENAL_DIR)Include;"
+				AdditionalIncludeDirectories="X:\TGRKIT\INCLUDE;$(OPENAL_DIR)Include;.\src"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CRT_SECURE_NO_WARNINGS;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -119,7 +119,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="X:\TGRKIT\INCLUDE;$(OPENAL_DIR)Include;"
+				AdditionalIncludeDirectories="X:\TGRKIT\INCLUDE;$(OPENAL_DIR)Include;.\src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CRT_SECURE_NO_WARNINGS;_WINDOWS"
 				RuntimeLibrary="1"
 				EnableFunctionLevelLinking="true"
@@ -179,29 +179,73 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\globe.c"
+				RelativePath=".\src\def.h"
 				>
 			</File>
-			<File
-				RelativePath=".\globe.h"
+			<Filter
+				Name="Math Support"
 				>
-			</File>
-			<File
-				RelativePath=".\mth.h"
+				<File
+					RelativePath=".\src\mth\mth.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Animation System"
 				>
-			</File>
-			<File
-				RelativePath=".\t07globe.c"
+				<File
+					RelativePath=".\src\anim\anim.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\anim\anim.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\anim\unit.c"
+					>
+				</File>
+				<Filter
+					Name="Rendering System"
+					>
+					<File
+						RelativePath=".\src\anim\rnd\rnd.h"
+						>
+					</File>
+					<File
+						RelativePath=".\src\anim\rnd\rndbase.c"
+						>
+					</File>
+					<File
+						RelativePath=".\src\anim\rnd\rnddata.c"
+						>
+					</File>
+					<File
+						RelativePath=".\src\anim\rnd\rndprim.c"
+						>
+					</File>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="Windows Depend"
 				>
-			</File>
-			<File
-				RelativePath=".\timer.c"
+				<File
+					RelativePath=".\src\win\main.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Unit"
 				>
-			</File>
-			<File
-				RelativePath=".\timer.h"
-				>
-			</File>
+				<File
+					RelativePath=".\src\units\u_dcow.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\units\units.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"

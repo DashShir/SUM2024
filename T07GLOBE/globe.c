@@ -1,11 +1,10 @@
-/* FILE NAME: globe.c
- * PROGRAMMER: DS4
- * LAST UPDATE: 14.06.2024
- * PURPOSE: Draw sphere.
+/* FILE NAME:   globe.c
+ * PROGRAMMER:  DS4
+ * LAST UPDATE: 20.06.2024
+ * PURPOSE:     Draw sphere.
  */
 
-#include <math.h>
-
+#include "mth.h"
 #include "globe.h"
 #include "timer.h"
 
@@ -16,7 +15,8 @@ static VEC Geom[GRID_H][GRID_W];
 static INT Ws, Hs;
 
 /* Projection: distance to plane, width and height */
-static DBL ProjDist = 0.05, ProjSize = 0.1, Wp, Hp;
+static DBL ProjDist = 0.13, ProjSize = 0.07, ProjFarClip = 30, Wp, Hp;
+static MATR MatrProj;
 
 /* Power extension function.
  * ARGUMENTS:
@@ -65,70 +65,17 @@ VOID GLB_Resize( INT W, INT H )
 {
   Ws = W;
   Hs = H;
+
+  /* Build projection */
+  if (Ws >= Hs)
+    Wp = ProjSize * Ws / Hs, Hp = ProjSize;
+  else
+    Wp = ProjSize, Hp = ProjSize * Hs / Ws;
+  MatrProj = MatrFrustum(-Wp / 2, Wp / 2, -Hp / 2, Hp / 2, ProjDist, ProjFarClip);
 } /* End of 'GLB_Resize' function */
 
-/* Rotate point around Y axis function.
- * ARGUMENTS:
- *   - point coordinates:
- *       VEC P;
- *   - angle in degrees:
- *       DBL Angle;
- * RETURNS:
- *   (VEC) rotated vector.
- */
-static VEC RotateX( VEC P, DBL Angle )
-{
-  DBL a = Angle * PI / 180, si = sin(a), co = cos(a);
-  VEC NewP;
- 
-  NewP.X = P.X;
-  NewP.Y = P.Z * si + P.Y * co;
-  NewP.Z = P.Z * co - P.Y * si;
-  return NewP;
-} /* End of 'RotateX' function */
-
-/* Rotate point around Y axis function.
- * ARGUMENTS:
- *   - point coordinates:
- *       VEC P;
- *   - angle in degrees:
- *       DBL Angle;
- * RETURNS:
- *   (VEC) rotated vector.
- */
-static VEC RotateY( VEC P, DBL Angle )
-{
-  DBL a = Angle * PI / 180, si = sin(a), co = cos(a);
-  VEC NewP;
- 
-  NewP.X = P.X * co - P.Z * si;
-  NewP.Y = P.Y;
-  NewP.Z = P.X * si + P.Z * co;
-  return NewP;
-} /* End of 'RotateY' function */
-
-/* Rotate point around Z axis function.
- * ARGUMENTS:
- *   - point coordinates:
- *       VEC P;
- *   - angle in degrees:
- *       DBL Angle;
- * RETURNS:
- *   (VEC) rotated vector.
- */
-static VEC RotateZ( VEC P, DBL Angle )
-{
-  DBL a = Angle * PI / 180, si = sin(a), co = cos(a);
-  VEC NewP;
- 
-  NewP.X = P.X * co - P.Y * si;
-  NewP.Y = P.X * si + P.Y * co;
-  NewP.Z = P.Z;
-  return NewP;
-} /* End of 'RotateZ' function */
-
 /* Globe drawing
- * ARGUMENTS:
+ * ARGUMENTS:  
  *   - device context:
  *       HDC hDC; 
  * RETURNS: None.
@@ -138,13 +85,12 @@ VOID GLB_Draw( HDC hDC )
   INT i, j, s;
   DBL Sc;
   DBL t = GLB_Time;
-  DBL alphaX = 21 * t, alphaY = 47 * t/* * sin(t)*/, alphaZ = 30 * t;
   HBRUSH hBr, hOldBr;
   HPEN hPen, hOldPen;
   POINT pnts1[] = {{0, 0}, {0, 0}, {0, 0}, {0, 0}};
+  MATR m;
   static POINT pnts[GRID_H][GRID_W];
-  static POINT pnsr[GRID_H][GRID_W];
-
+  
   /* Pen initialization */
   /*
   hBr = CreateSolidBrush(RGB(0, 0, 130));
@@ -153,28 +99,26 @@ VOID GLB_Draw( HDC hDC )
   hPen = CreatePen(PS_SOLID, 1, RGB(0, 150, 0));
   hOldPen = SelectObject(hDC, hPen);
 
-  /* Build projection */
-  if (Ws >= Hs)
-    Wp = ProjSize * Ws / Hs, Hp = ProjSize;
-  else
-    Wp = ProjSize, Hp = ProjSize * Hs / Ws;
+  /* Build transform */
+  m = MatrMulMatr8(MatrRotateZ(t * 30),
+                   MatrRotateX(sin(t) * 13 * 21),
+                   MatrTranslate(VecSet(sin(t), sin(t), 0)),
+                   MatrRotateY(t * 47),
+                   MatrRotate(90, VecSet(1, 100, 1)),
+                   MatrTranslate(VecSet(-30, -21 * sin(t) - 5, -30 * sin(t) - 47)),
+                   MatrView(VecSet(5, 5 * sin(t), 5), VecSet1(0), VecSet(0, 1, 0)),
+                   MatrProj);
+                   
 
+  /* Build projection */
   for (i = 0; i < GRID_H; i++)
     for (j = 0; j < GRID_W; j++)
     {
       VEC P;
-      DBL xp, yp;
 
-      P = RotateZ(Geom[i][j], alphaZ);
-      P = RotateY(P, alphaY);
-      P = RotateX(P, alphaX);
-      P.Z -= 5;
-
-      xp = P.X * ProjDist / -P.Z;
-      yp = P.Y * ProjDist / -P.Z;
-
-      pnts[i][j].x = (INT)(Ws / 2 + xp * Ws / Wp);
-      pnts[i][j].y = (INT)(Hs / 2 - yp * Hs / Hp);
+      P = VecMulMatr(Geom[i][j], m);
+      pnts[i][j].x = (INT)((P.X + 1) * Ws / 2);
+      pnts[i][j].y = (INT)((-P.Y + 1) * Hs / 2);
     }
 
   s = 8;
@@ -184,26 +128,7 @@ VOID GLB_Draw( HDC hDC )
   for (i = 0; i < GRID_H; i++)
     for (j = 0; j < GRID_W; j++)
       Ellipse(hDC, pnts[i][j].x + s, pnts[i][j].y + s, pnts[i][j].x - s, pnts[i][j].y - s);
-  */
-  /* By lines */
-  /* Parallels */
-  /*
-  for (i = 0; i < GRID_H; i++)
-  {
-    MoveToEx(hDC, pnts[i][0].x, pnts[i][0].y, NULL);
-    for (j = 1; j < GRID_W; j++)            
-      LineTo(hDC, pnts[i][j].x, pnts[i][j].y);
-  }
-  */
-  /* Meridians */
-  /*
-  for (j = 0; j < GRID_W; j++)
-  {
-    MoveToEx(hDC, pnts[0][j].x, pnts[0][j].y, NULL);
-    for (i = 1; i < GRID_H; i++)
-      LineTo(hDC, pnts[i][j].x, pnts[i][j].y);
-  }
-  */
+  
   /* Brush initializtion */
   /*
   SelectObject(hDC, hOldBr);

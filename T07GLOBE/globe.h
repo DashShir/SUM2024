@@ -8,19 +8,13 @@
 #define __globe_h_
 
 #include <commondf.h>
+#include "mth.h"
 
 /* Definitions */
 #define WND_CLASS_NAME "My window class"
-#define PI 3.14159265358979323846264338327950288419716939937510582
 #define GRID_H 18
 #define GRID_W 30
                  
-typedef double DBL;
-typedef struct
-{
-  DBL X, Y, Z;
-} VEC;
-
 /* Globe initialisation function.
  * ARGUMENTS:
  *   - radius:
