@@ -23,6 +23,8 @@ VOID DS4_RndInit( HWND hWnd )
   ReleaseDC(hWnd, hDC);
   DS4_hRndBmFrame = NULL;
   DS4_RndCamSet(VecSet1(5), VecSet1(0), VecSet(0, 1, 0));
+  DS4_RndProjPoints = NULL;
+  DS4_RndProjPointsSize = 0;
 } /* End of 'DS4_RndInit' function */
 
 /* Render deinitialization function.
@@ -34,6 +36,8 @@ VOID DS4_RndClose( VOID )
   DeleteDC(DS4_hRndDCFrame);
   if (DS4_hRndBmFrame)
     DeleteObject(DS4_hRndBmFrame);
+  if (DS4_RndProjPoints != NULL)
+    free(DS4_RndProjPoints);
 } /* End of 'DS4_RndClose' function */
 
 /* Resize function.

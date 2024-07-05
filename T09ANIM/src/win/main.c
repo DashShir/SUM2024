@@ -23,7 +23,7 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
   WNDCLASS wc;
   HWND hWnd;
   MSG msg;
-  INT i, x = 0;
+  INT x = 0;
   
   SetDbgMemHooks();
 
@@ -60,9 +60,16 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
   /*** Add units ***/
   DS4_AnimUnitAdd(DS4_UnitCreateCtrl());
-  for (i = 0; i < 5; i++)
-    DS4_AnimUnitAdd(DS4_UnitCreateCow(VecSet(Rnd1() * 5, 0, Rnd1() * 5)));      
-  DS4_AnimUnitAdd(DS4_UnitCreateFloor(VecSet(1, 0, 1)));
+  //DS4_AnimUnitAdd(DS4_UnitCreateIsland(Vec3Set(100, 0, 100)));
+  //for (i = 0; i < 1 * 30; i++)
+  /*
+  DS4_AnimUnitAdd(DS4_UnitCreateCow(Vec3Set(Rnd1() * 5, 0, Rnd1() * 5)));      
+  DS4_AnimUnitAdd(DS4_UnitCreateFloor(Vec3Set(1, 0, 1)));
+  */
+  //DS4_AnimUnitAdd(DS4_UnitCreateGrass(Vec3Set(0, 0, 0)));
+  /* DS4_AnimUnitAdd(DS4_UnitCreateGrass(Vec3Set(100, 0, 100))); */
+  DS4_AnimUnitAdd(DS4_UnitCreateMountain());
+  DS4_AnimUnitAdd(DS4_UnitCreateTexture());
 
   while (TRUE)
     if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))

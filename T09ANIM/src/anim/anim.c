@@ -1,5 +1,6 @@
-/* PROGRAMMER : DS4
- * LAST UPDATE: 24.06.2024
+/* FILE NAME  : anim.c
+ * PROGRAMMER : DS4
+ * LAST UPDATE: 29.06.2024
  * PURPOSE    : 3D animation project.
  *          Animation set module.
  */
@@ -21,7 +22,7 @@ VOID DS4_AnimInit( HWND hWnd )
 {
   DS4_Anim.hWnd = hWnd;
   DS4_RndInit(hWnd);
-  DS4_Anim.hDC = DS4_hRndDCFrame;
+  DS4_Anim.hDC = DS4_hRndDC;
 
   DS4_TimerInit();
   DS4_AnimKeyboardInit();
@@ -49,7 +50,7 @@ VOID DS4_AnimResize( INT W, INT H )
  */
 VOID DS4_AnimCopyFrame( HDC hDC )  
 {
-  DS4_RndCopyFrame(hDC);
+  DS4_RndCopyFrame();
 } /* End of 'DS4_AnimCopyFrame' function */
 
 /* Animation closing function.
@@ -77,22 +78,21 @@ VOID DS4_AnimClose( VOID )
 VOID DS4_AnimRender( VOID )
 {
   INT i;
-  static DBL OldTime = 0;
+  static FLT OldTime = 0;
 
   /* if keyboard, mouse, joystick */
   DS4_TimerResponse();
   DS4_AnimKeyboardResponse();
   DS4_AnimGetMouseResponse();
-
+  
   if (DS4_Anim.GlobalTime - OldTime > 3)
   {
     static CHAR Buf[100];
 
-    sprintf(Buf, "DS4 Anim. FPS: %.3f", DS4_Anim.FPS);
-    SetWindowText(DS4_Anim.hWnd, Buf);
+    TextOut(DS4_hRndFrameDC, 8, 8, Buf, sprintf(Buf, "DS4 Anim. FPS: %.3f\tCoordinates: %f", DS4_Anim.FPS));
+    /* SetWindowText(DS4_Anim.hWnd, Buf); */
     OldTime = DS4_Anim.GlobalTime;
   }
-
   for (i = 0; i < DS4_Anim.NumOfUnits; i++)
     DS4_Anim.Units[i]->Response(DS4_Anim.Units[i], &DS4_Anim);
   DS4_RndStart();

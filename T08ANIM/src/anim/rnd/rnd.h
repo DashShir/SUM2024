@@ -26,6 +26,10 @@ extern MATR
   DS4_RndMatrProj, /* Projection coordinate system matrix */
   DS4_RndMatrVP;   /* Stored (View * Proj) matrix */    
 
+/* Array of projection points */
+extern POINT *DS4_RndProjPoints;
+extern INT DS4_RndProjPointsSize;
+
 /* Render initialization function.
  * ARGUMENTS:
  *   - window handle:

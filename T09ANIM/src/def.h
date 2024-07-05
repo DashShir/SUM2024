@@ -7,7 +7,9 @@
 
 #ifndef __def_h_
 #define __def_h_
- 
+
+#pragma warning(disable: 4244 4305)
+
 /* Debug memory allocation support */
 #ifndef NDEBUG
 #  define _CRTDBG_MAP_ALLOC
@@ -29,19 +31,19 @@ typedef unsigned long long UINT64;
 /* Random number generator (0..1) function.
  * ARGUMENTS: None.
  * RETURNS:
- *   (DBL) result random value.
+ *   (FLT) result random value.
  */
-__inline DBL Rnd0( VOID )
+__inline FLT Rnd0( VOID )
 {
-  return rand() / (DBL)RAND_MAX;
+  return rand() / (FLT)RAND_MAX;
 } /* End of 'Rnd0' function */
 
 /* Random number generator (-1..1) function.
  * ARGUMENTS: None.
  * RETURNS:
- *   (DBL) result random value.
+ *   (FLT) result random value.
  */
-__inline DBL Rnd1( VOID )
+__inline FLT Rnd1( VOID )
 {
   return 2.0 * rand() / RAND_MAX - 1;
 } /* End of 'Rnd1' function */

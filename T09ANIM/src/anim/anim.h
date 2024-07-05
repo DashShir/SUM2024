@@ -35,7 +35,7 @@ struct tagds4ANIM
   ds4UNIT *Units[DS4_MAX_UNITS]; /* Unit action functions */
   INT NumOfUnits;                /* Units quantity */
 
-  DBL
+  FLT
     GlobalTime, /* Global time (without pause) */
     Time,       /* Full time */
     DeltaTime,  /* One ... time */
@@ -52,6 +52,8 @@ struct tagds4ANIM
 
 /* Animation context */
 extern ds4ANIM DS4_Anim;
+
+extern VEC3 DS4_AnimLoc;
 
 /* Animation initialization function.
  * ARGUMENTS:

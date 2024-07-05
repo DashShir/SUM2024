@@ -8,22 +8,28 @@
 #include "def.h"
 
 HWND DS4_hRndWnd;        /* Work window handle */
-HDC DS4_hRndDCFrame;     /* Work window memory device context  */
-HBITMAP DS4_hRndBmFrame; /* Work window background bitmap handle */
+HDC DS4_hRndDC;          /* Work window memory device context  */
+HGLRC DS4_hRndGLRC;      /* Work OpenGL rendering context */
 INT DS4_RndFrameW, DS4_RndFrameH; /* Work window size */
-DWORD *DS4_RndFrameBits; /* Frame buffer pixel data (from DIB section) */
-DBL
+FLT
   DS4_RndProjSize = 0.1,      /* Project plane fit square */
   DS4_RndProjDist = 0.1,      /* Distance to project plane from viewer (near) */
   DS4_RndProjFarClip = 300;   /* Distance to project far clip plane (far) */
  
+VEC3 
+  DS4_RndCamLoc,         /* Camera location */
+  DS4_RndCamAt,          /* Camera destination */
+  DS4_RndCamDir,         /* Camera direction */
+  DS4_RndCamRight,       /* Camera right direction */
+  DS4_RndCamUp;          /* Camera up direction */
+
 MATR
   DS4_RndMatrView,  /* View coordinate system matrix */
   DS4_RndMatrProj,  /* Projection coordinate system matrix */
   DS4_RndMatrVP; /* Stored (View * Proj) matrix */
- 
-/* Array of projection points */
-POINT *DS4_RndProjPoints;
-INT DS4_RndProjPointsSize;
 
-/* END OF 'rnddat' FILE */
+
+/* Frame overlay layer device context */
+HDC DS4_hRndFrameDC;
+
+/* END OF 'rnddata' FILE */

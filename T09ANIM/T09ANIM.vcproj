@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="T08ANIM"
+	Name="T09ANIM"
 	ProjectGUID="{BD019BD4-A393-47A7-9B8F-3504F613010F}"
-	RootNamespace="T08ANIM"
+	RootNamespace="T09ANIM"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -229,9 +229,49 @@
 						>
 					</File>
 					<File
+						RelativePath=".\src\anim\rnd\rnddbg.c"
+						>
+					</File>
+					<File
+						RelativePath=".\src\anim\rnd\rndgrid.c"
+						>
+					</File>
+					<File
 						RelativePath=".\src\anim\rnd\rndprim.c"
 						>
 					</File>
+					<Filter
+						Name="GLEW"
+						>
+						<File
+							RelativePath=".\src\glew\glew.c"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="Resourses"
+						>
+						<File
+							RelativePath=".\src\anim\rnd\res\rndmtl.c"
+							>
+						</File>
+						<File
+							RelativePath=".\src\anim\rnd\res\rndres.c"
+							>
+						</File>
+						<File
+							RelativePath=".\src\anim\rnd\res\rndres.h"
+							>
+						</File>
+						<File
+							RelativePath=".\src\anim\rnd\res\rndshd.c"
+							>
+						</File>
+						<File
+							RelativePath=".\src\anim\rnd\res\rndtex.c"
+							>
+						</File>
+					</Filter>
 				</Filter>
 			</Filter>
 			<Filter
@@ -255,6 +295,22 @@
 				</File>
 				<File
 					RelativePath=".\src\units\u_floor.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\units\u_grass.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\units\u_island.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\units\u_mount.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\units\u_texture.c"
 					>
 				</File>
 				<File

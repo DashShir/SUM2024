@@ -5,6 +5,8 @@
  *              Primitive handle module.
  */
 
+#include <stdio.h>
+
 #include "rnd.h"
 
 /* Camera setting function.
@@ -56,29 +58,36 @@ VOID DS4_RndPrimDraw( ds4PRIM *Pr, MATR World )
 {
   INT i;
   MATR wvp = MatrMulMatr(World, DS4_RndMatrVP);
-  POINT *pnts;
- 
-  if ((pnts = malloc(sizeof(POINT) * Pr->NumOfV)) == NULL)
-    return;
- 
+
+  if (Pr->NumOfV > DS4_RndProjPointsSize)
+  {
+    if (DS4_RndProjPoints != NULL)
+    {
+      DS4_RndProjPointsSize = 0;
+      free(DS4_RndProjPoints);
+    }
+    if ((DS4_RndProjPoints = malloc(sizeof(POINT) * Pr->NumOfV)) == NULL)
+      return;
+    DS4_RndProjPointsSize = Pr->NumOfV;
+  }
+
   /* Build projection */
   for (i = 0; i < Pr->NumOfV; i++)
   {
     VEC p = VecMulMatr(Pr->V[i].P, wvp);
  
-    pnts[i].x = (INT)((p.X + 1) * DS4_RndFrameW / 2);
-    pnts[i].y = (INT)((-p.Y + 1) * DS4_RndFrameH / 2);
+    DS4_RndProjPoints[i].x = (INT)((p.X + 1) * DS4_RndFrameW / 2);
+    DS4_RndProjPoints[i].y = (INT)((-p.Y + 1) * DS4_RndFrameH / 2);
   }
  
   /* Draw triangles */
   for (i = 0; i < Pr->NumOfI; i += 3)
   {
-    MoveToEx(DS4_hRndDCFrame, pnts[Pr->I[i]].x, pnts[Pr->I[i]].y, NULL);
-    LineTo(DS4_hRndDCFrame, pnts[Pr->I[i + 1]].x, pnts[Pr->I[i + 1]].y);
-    LineTo(DS4_hRndDCFrame, pnts[Pr->I[i + 2]].x, pnts[Pr->I[i + 2]].y);
-    LineTo(DS4_hRndDCFrame, pnts[Pr->I[i]].x, pnts[Pr->I[i]].y);
+    MoveToEx(DS4_hRndDCFrame, DS4_RndProjPoints[Pr->I[i]].x, DS4_RndProjPoints[Pr->I[i]].y, NULL);
+    LineTo(DS4_hRndDCFrame, DS4_RndProjPoints[Pr->I[i + 1]].x, DS4_RndProjPoints[Pr->I[i + 1]].y);
+    LineTo(DS4_hRndDCFrame, DS4_RndProjPoints[Pr->I[i + 2]].x, DS4_RndProjPoints[Pr->I[i + 2]].y);
+    LineTo(DS4_hRndDCFrame, DS4_RndProjPoints[Pr->I[i]].x, DS4_RndProjPoints[Pr->I[i]].y);
   }
-  free(pnts);
 } /* End of 'DS4_RndPrimDraw' function */
 
 /* Creating quadlirateral function.
@@ -87,7 +96,8 @@ VOID DS4_RndPrimDraw( ds4PRIM *Pr, MATR World )
  *       ds4PRIM *Pr;
  *   - vectors:
  *       VEC Org, Du, Dv;  
- * RETURNS: None.
+ * RETURNS: 
+ *   (BOOL) TRUE if seccess FALSE otherwise.
  */
 BOOL DS4_RndPrimCreateQuad( ds4PRIM *Pr, VEC Org, VEC Du, VEC Dv )
 {

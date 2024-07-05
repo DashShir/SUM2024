@@ -19,6 +19,23 @@
  */
 ds4UNIT * DS4_UnitCreateCow( VEC DrawPos );
 
+/* Control unit creation function.
+ * ARGUMENTS: None.
+ *   - object position:
+ *       VEC DrawPos;
+ * RETURNS: None.
+ */
+ds4UNIT * DS4_UnitCreateCtrl( VOID );
+
+/* Floor unit creation function.
+ * ARGUMENTS: None.
+ *   - object position:
+ *       VEC DrawPos;
+ * RETURNS:
+ *   (ds4UNIT *) pointer to created unit.
+ */
+ds4UNIT * DS4_UnitCreateFloor( VEC DrawPos );
+
 #endif /* __units_h_ */
  
 /* END OF 'units.h' FILE */ 
