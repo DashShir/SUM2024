@@ -76,7 +76,7 @@ static VOID DS4_UnitRender(ds4UNIT_COW * Uni, ds4ANIM *Ani)
   DS4_RndPrimDraw(&Uni->Cow, /* MatrMulMatr( */MatrRotateY(0 * Uni->TimeAngle)/* , MatrTranslate(VecAddVec(Uni->StartPos, Uni->Pos)) *//*, MatrTranslate(Vec3Set(29, -0.4, 21)))*/);
 } /* End of 'DS4_UnitRender' function */
 
-/* Bounce cow unit creation function.                                    
+/* Bounce cow unit creation function.
  * ARGUMENTS: None.
  *   - object position:
  *       VEC3 DrawPos;

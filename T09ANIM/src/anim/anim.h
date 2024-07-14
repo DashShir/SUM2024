@@ -1,6 +1,6 @@
 /* FILE NAME  : anim.h
  * PROGRAMMER : DS4
- * LAST UPDATE: 21.06.2024
+ * LAST UPDATE: 08.07.2024
  * PURPOSE    : 3D animation project.
  *          Anim declaration module.
  */
@@ -72,12 +72,10 @@ VOID DS4_AnimInit( HWND hWnd );
 VOID DS4_AnimResize( INT W, INT H );
 
 /* Animation initialization function.
- * ARGUMENTS:
- *   - device context:
- *       HDC hDC;
+ * ARGUMENTS: None.
  * RETURNS: None.
  */
-VOID DS4_AnimCopyFrame( HDC hDC );
+VOID DS4_AnimCopyFrame( VOID );
 
  /* Animation closing function.
  * ARGUMENTS: None.

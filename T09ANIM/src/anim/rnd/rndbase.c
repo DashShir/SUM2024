@@ -76,11 +76,13 @@ VOID DS4_RndInit( HWND hWnd )
     exit(0);
   }
  
+  /*
   if (!(GLEW_ARB_vertex_shader && GLEW_ARB_fragment_shader))
   {
     MessageBox(DS4_hRndWnd, "Error: no shaders support", "Error", MB_ICONERROR | MB_OK);
     exit(0);
   }
+  */
  
   #ifndef NDEBUG
     OutputDebugString(glGetString(GL_VERSION));
@@ -112,7 +114,7 @@ VOID DS4_RndInit( HWND hWnd )
   wglSwapIntervalEXT(0);
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_BLEND);
-  glBlendFunc(GL_ONE, GL_ZERO);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   glEnable(GL_PRIMITIVE_RESTART);
   glPrimitiveRestartIndex(-1);
@@ -141,7 +143,7 @@ VOID DS4_RndInit( HWND hWnd )
   DS4_RndCamSet(Vec3Set1(5), Vec3Set1(0), Vec3Set(0, 1, 0));
 
   /* Frame overlay layer initialization */
-  DS4_hRndFrameDC = CreateCompatibleDC(DS4_hRndDC);
+  //DS4_hRndFrameDC = CreateCompatibleDC(DS4_hRndDC);
   /* Setup DIB section */
   memset(&bmih, 0, sizeof(bmih));
   bmih.biSize = sizeof(BITMAPINFOHEADER);
@@ -154,13 +156,14 @@ VOID DS4_RndInit( HWND hWnd )
   bmih.biClrUsed = 0;
   bmih.biClrImportant = 0;
   bmih.biXPelsPerMeter = bmih.biYPelsPerMeter = 0;
+  /*
   DS4_hRndBmFrame =
     CreateDIBSection(NULL, (BITMAPINFO *)&bmih, DIB_RGB_COLORS,
       (VOID **)&DS4_RndFrameBits, NULL, 0);
   SelectObject(DS4_hRndFrameDC, DS4_hRndBmFrame);
   SetTextColor(DS4_hRndFrameDC, RGB(255, 255, 255));
   SetBkColor(DS4_hRndFrameDC, RGB(0, 0, 0));
-
+  */
   DS4_RndResInit();
 } /* End of 'DS4_RndInit' function */
 
@@ -172,8 +175,8 @@ VOID DS4_RndClose( VOID )
 {
   DS4_RndResClose();
 
-  DeleteDC(DS4_hRndFrameDC);
-  DeleteObject(DS4_hRndBmFrame);
+  //DeleteDC(DS4_hRndFrameDC);
+  //DeleteObject(DS4_hRndBmFrame);
 
   wglMakeCurrent(NULL, NULL);
   wglDeleteContext(DS4_hRndGLRC);
@@ -233,12 +236,6 @@ VOID DS4_RndStart( VOID )
  */
 VOID DS4_RndEnd( VOID )
 {
-  /* glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); */
-  glLoadIdentity();
-  glPixelZoom(1, -1);
-  glRasterPos2d(-1, 1);
-  glDrawPixels(DS4_RND_OVERLAY_W, DS4_RND_OVERLAY_H, GL_BGRA_EXT, GL_UNSIGNED_BYTE, DS4_RndFrameBits);
-  glBlendFunc(GL_ONE, GL_ZERO);
   glFinish();
 } /* End of 'DS4_RndEnd' function */
 

@@ -1,6 +1,6 @@
 /* FILE NAME  : u_ctrl.c
  * PROGRAMMER : DS4
- * LAST UPDATE: 04.07.2024
+ * LAST UPDATE: 08.07.2024
  * PURPOSE    : 3D animation project.
  *              Control unit sample module.
  */
@@ -55,7 +55,7 @@ static VOID DS4_UnitInit( ds4UNIT_CTRL *Uni, ds4ANIM *Ani )
   Uni->CamRight = Uni->CamSaveRight = Uni->CamHomeRight = Vec3Set(DS4_RndMatrView.A[0][0], DS4_RndMatrView.A[1][0], DS4_RndMatrView.A[2][0]);
   Uni->CamDirWoY = Vec3Set(Uni->CamDir.X, 0, Uni->CamDir.Z);
   Uni->CamSpeed = 2;
-  Uni->CamAngleSpeed = 30;
+  Uni->CamAngleSpeed = 15;
   Uni->CamSpeedMode = FALSE;
 } /* End of 'DS4_UnitInit' function */
                            
@@ -151,99 +151,6 @@ static VOID DS4_UnitResponse( ds4UNIT_CTRL *Uni, ds4ANIM *Ani )
     DS4_RndCamAt = Uni->CamAt = VecAddVec(DS4_RndCamAt, dv1);
     DS4_RndCamAt = Uni->CamAt = VecAddVec(DS4_RndCamAt, dv2);
 
-      
-    /* Move camera left-right */
-    /*
-    w = (Uni->CamAt.Z - Uni->CamLoc.Z);
-    h = (Uni->CamAt.X - Uni->CamLoc.X);
-    l = sqrt(w * w + h * h);
-    cos_alpha = w / l;
-    sin_alpha = h / l;
-
-    rep = (Ani->Keys['A'] - Ani->Keys['D']) * Ani->DeltaTime * Uni->CamSpeed;
-    X = Uni->CamLoc.X - cos_alpha * rep;
-    Z = Uni->CamLoc.Z - (-sin_alpha) * rep;
-    Uni->CamLoc = Vec3Set(X, 1, Z);
-    
-    Uni->CamAt = VecMulMatr(Uni->CamLoc, MatrTranslate(Vec3Set(X, 1, Z)));
-    
-    Uni->CamLoc = 
-      VecAddVec(Uni->CamLoc, 
-        Vec3MulNum(Uni->CamDirWoY, Ani->DeltaTime * Uni->CamSpeed *
-          (Ani->Keys[VK_LEFT] - Ani->Keys[VK_RIGHT])));
-    Uni->CamDir = 
-      VecAddVec(Uni->CamDirWoY, 
-        Vec3MulNum(Uni->CamDirWoY, Ani->DeltaTime * Uni->CamSpeed *
-          (Ani->Keys[VK_LEFT] - Ani->Keys[VK_RIGHT])));
-    */
-    
-    /* Turn camera by Y */
-    
-    /* Uni->CamAt = Vec3MulNum(Uni->CamRight, Ani->DeltaTime * Uni->CamAngleSpeed * (Ani->Keys[VK_RIGHT] - Ani->Keys[VK_LEFT]) / 10); */
-
-    /*
-    Uni->CamAt = 
-      PointTransform(Uni->CamAt,
-        MatrMulMatr3(MatrTranslate(VecNeg(Uni->CamLoc)),
-                     MatrRotate((Ani->Keys[VK_RIGHT] - Ani->Keys[VK_LEFT]) * Ani->DeltaTime * Uni->CamAngleSpeed, Vec3Set(0, Uni->CamDir.Y, 0)),
-                     MatrTranslate(Uni->CamLoc))); 
-    */
-     
-    /*
-    DS4_RndCamAt = Uni->CamAt = VecAddVec(DS4_RndCamAt, Vec3MulNum(DS4_RndCamRight, Ani->DeltaTime * Uni->CamAngleSpeed * (Ani->Keys[VK_RIGHT] - Ani->Keys[VK_LEFT]) / 8));
-    */
-
-    /*
-    Uni->CamAt =
-      PointTransform(Uni->CamAt,
-        MatrMulMatr3(MatrTranslate(VecNeg(Uni->CamLoc)),
-          MatrRotate((Ani->Keys[VK_DOWN] - Ani->Keys[VK_UP]) * Ani->DeltaTime * Uni->CamAngleSpeed, Vec3Set(Uni->CamDir.X, 0, 0)),
-                    MatrTranslate(Uni->CamLoc))); 
-    */
-    /* Move camera up */
-    /*
-    Uni->CamLoc = 
-      VecAddVec(Uni->CamLoc, 
-        Vec3MulNum(Uni->CamUp, Ani->DeltaTime * Uni->CamSpeed *
-          (Ani->Keys[VK_SHIFT])));
-    */
-    /*
-    Uni->CamLoc =
-      PointTransform(Uni->CamLoc,
-                     MatrMulMatr3(
-                       MatrTranslate(VecNeg(Uni->CamLoc)), 
-                       MatrRotateY(Ani->Keys[VK_LBUTTON] *
-                         Ani->DeltaTime * Uni->CamAngleSpeed * Ani->Mdx / 200), 
-                       MatrTranslate(Uni->CamLoc)));
-    */
-    
-    /*
-    Uni->CamLoc = 
-      PointTransform(Uni->CamLoc, 
-      MatrTranslate(VecMulMatr(Vec3MulNum(Uni->CamLoc, Ani->Keys[VK_LBUTTON] * Ani->DeltaTime * Uni->CamSpeed * Ani->Mdx / 200), MatrRotateY(15))));
-    */
-    /*
-    Uni->CamLoc = 
-      VecAddVec(Uni->CamLoc, 
-      VecMulMatr(Vec3MulNum(Uni->CamLoc, Ani->Keys[VK_LBUTTON] * Ani->DeltaTime * Uni->CamSpeed * Ani->Mdx / 200), MatrRotateY(15)));
-
-    */
-    /*
-    Uni->CamLoc =
-      PointTransform(Uni->CamLoc,
-                     MatrRotate(Ani->Keys[VK_LBUTTON] *
-                     Ani->DeltaTime * Uni->CamAngleSpeed * Ani->Mdx / 200, Vec3Set(0, Uni->CamDir.Y, 0)));
-    
-    Uni->CamLoc =
-      PointTransform(Uni->CamLoc,
-                     MatrRotate(Ani->Keys[VK_RBUTTON] *
-                     Ani->DeltaTime * Uni->CamAngleSpeed * Ani->Mdy / 200, Vec3Set(Uni->CamDir.X, 0, 0)));
-    Uni->CamLoc =
-      PointTransform(Uni->CamLoc,
-                     MatrRotate(Ani->Keys[VK_MBUTTON] *
-                     Ani->DeltaTime * Uni->CamAngleSpeed * Ani->Mdx / 200, Vec3Set(0, 0, Uni->CamDir.Z)));
-    */
-    
     if (Ani->Mdx > 30)
       dv.X = 30;
     
@@ -262,16 +169,16 @@ static VOID DS4_UnitResponse( ds4UNIT_CTRL *Uni, ds4ANIM *Ani )
     Elevator = atan2(sinT, cosT) * 180 / PI;
 
     Azimuth += Ani->DeltaTime *
-      (21 * -30 * 1 * Ani->Keys[VK_LBUTTON] * Ani->Mdx * (1 + Ani->Keys[VK_SHIFT] * 30) +
+      (13 * -30 * 1 * Ani->Keys[VK_LBUTTON] * Ani->Mdx * (1 + Ani->Keys[VK_SHIFT] * 30) +
        47 * (Ani->Keys[VK_LEFT] - Ani->Keys[VK_RIGHT]));
 
     Elevator += Ani->DeltaTime *
-      (21 * -30 * 1 * Ani->Keys[VK_LBUTTON] * Ani->Mdy * (1 + Ani->Keys[VK_SHIFT] * 30) +
+      (13 * -30 * 1 * Ani->Keys[VK_LBUTTON] * Ani->Mdy * (1 + Ani->Keys[VK_SHIFT] * 30) +
        47 * 1 * (Ani->Keys[VK_UP] - Ani->Keys[VK_DOWN]));
      
     Dist -= Ani->DeltaTime *
       (20 * 1 * Ani->Mdz * (1 + Ani->Keys[VK_SHIFT] * 30) +
-       20 * 8 * 1 * (1 + Ani->Keys[VK_SHIFT] * 30) *
+       20 * 1 * (1 + Ani->Keys[VK_SHIFT] * 30) *
           (Ani->Keys[VK_NEXT] - Ani->Keys[VK_PRIOR])); 
 
     if (Elevator < 1)
@@ -353,16 +260,17 @@ static VOID DS4_UnitResponse( ds4UNIT_CTRL *Uni, ds4ANIM *Ani )
 static VOID DS4_UnitRender(ds4UNIT_CTRL *Uni, ds4ANIM *Ani)
 {
   static FLT OldTime = 0;
+  static CHAR Buf[1000];
 
   if (DS4_Anim.GlobalTime - OldTime > 3)
   {
-    static CHAR Buf[100];
-
     sprintf(Buf, "DS4 Anim. FPS: %.3f\tCoordinates: X:%f, Y:%f, Z:%f", DS4_Anim.FPS, Uni->CamLoc.X, Uni->CamLoc.Y, Uni->CamLoc.Z);
     SetWindowText(DS4_Anim.hWnd, Buf);
     OldTime = DS4_Anim.GlobalTime;
   }
 
+  sprintf(Buf, "%s\n%s\n%s", glGetString(GL_VENDOR), glGetString(GL_VERSION), glGetString(GL_RENDERER));
+  DS4_RndFntDraw(Buf, Vec3Set(0, -155, 0), 30, Vec3Set(1, 1, 0));
 } /* End of 'DS4_UnitRender' function */
 
 /* Control unit creation function.

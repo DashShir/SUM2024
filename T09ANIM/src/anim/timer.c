@@ -8,8 +8,6 @@
 
 #include "anim.h"
 
-
-
 static LONG
   StartTime,            /* Start time */
   OldTime,              /* Old time */

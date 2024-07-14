@@ -1,14 +1,13 @@
 /* FILE NAME  : rndshd.c         
  * PROGRAMMER : DS4
- * LAST UPDATE: 29.06.2024
+ * LAST UPDATE: 14.07.2024
  * PURPOSE    : 3D animation project.
  *          Render shader module.
  */
 
 #include <stdio.h>
-#include <glew.h>
 
-#include "rndres.h"
+#include "anim/rnd/rnd.h"
 
 /* Save log to file function.
  * ARGUMENTS:
@@ -24,7 +23,7 @@ static VOID DS4_RndShdLog( CHAR *FileNamePrefix, CHAR *ShaderName, CHAR *Text )
 {
   FILE *F;
 
-  if ((F = fopen("bin/shaders/shd{30}vg4.log", "a")) == NULL)
+  if ((F = fopen("bin/shaders/shd{30}ds4.log", "a")) == NULL)
     return;
   fprintf(F, "%s : %s\n%s\n\n", FileNamePrefix, ShaderName, Text);
   fclose(F);

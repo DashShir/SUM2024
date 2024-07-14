@@ -1,6 +1,6 @@
 /* FILE NAME  : rndprim.c
  * PROGRAMMER : DS4
- * LAST UPDATE: 28.06.2024
+ * LAST UPDATE: 06.07.2024
  * PURPOSE    : 3D animation project.
  *              Primitive handle module.
  */
@@ -77,7 +77,8 @@ VOID DS4_RndPrimCreate( ds4PRIM *Pr, ds4PRIM_TYPE Type,
  */
 VOID DS4_RndPrimFree( ds4PRIM *Pr )
 {
-  glBindVertexArray(Pr->VA);
+  if (Pr->VA != 0)
+    glBindVertexArray(Pr->VA);
   if (Pr->VBuf != 0)
   {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -106,13 +107,18 @@ VOID DS4_RndPrimDraw( ds4PRIM *Pr, MATR World )
     wvp = MatrMulMatr(w, DS4_RndMatrVP);
   INT
     ProgId = DS4_RndMtlApply(Pr->MtlNo),
-    loc,
+    loc, i,
+    modes[2],
     gl_type = Pr->Type == DS4_RND_PRIM_LINES ? GL_LINES :
               Pr->Type == DS4_RND_PRIM_TRIMESH ? GL_TRIANGLES :
               Pr->Type == DS4_RND_PRIM_TRISTRIP ? GL_TRIANGLE_STRIP :
               GL_POINT;
 
   glUseProgram(ProgId);
+  if ((loc = glGetUniformLocation(ProgId, "ScrW")) != -1)
+    glUniform1i(loc, DS4_Anim.W);
+  if ((loc = glGetUniformLocation(ProgId, "ScrH")) != -1)
+    glUniform1i(loc, DS4_Anim.H);
   if ((loc = glGetUniformLocation(ProgId, "MatrWVP")) != -1)
     glUniformMatrix4fv(loc, 1, FALSE, wvp.A[0]);
   if ((loc = glGetUniformLocation(ProgId, "MatrW")) != -1)
@@ -123,6 +129,27 @@ VOID DS4_RndPrimDraw( ds4PRIM *Pr, MATR World )
     glUniformMatrix4fv(loc, 1, FALSE, winv.A[0]);
   if ((loc = glGetUniformLocation(ProgId, "CamLoc")) != -1)
     glUniform3fv(loc, 1, &DS4_RndCamLoc.X);
+  if ((loc = glGetUniformLocation(ProgId, "IsWireframe")) != -1)
+  {
+    glGetIntegerv(GL_POLYGON_MODE, modes);
+    glUniform1i(loc, modes[0] != GL_FILL);
+  }
+  /* Setup shader addons */
+  for (i = 0; i < 5; i++)
+  {
+    static CHAR Name[] = "AddonI0";
+
+    Name[6] = '0' + i;
+    Name[5] = 'I';
+    if ((loc = glGetUniformLocation(ProgId, Name)) != -1)
+      glUniform1i(loc, DS4_RndShdAddonI[i]);
+    Name[5] = 'F';
+    if ((loc = glGetUniformLocation(ProgId, Name)) != -1)
+      glUniform1f(loc, DS4_RndShdAddonF[i]);
+    Name[5] = 'V';
+    if ((loc = glGetUniformLocation(ProgId, Name)) != -1)
+      glUniform3fv(loc, 1, &DS4_RndShdAddonV[i].X);
+  }
 
   /* glLoadMatrixf(wvp.A[0]); */
 
@@ -350,7 +377,7 @@ BOOL DS4_RndPrimLoad( ds4PRIM *Pr, CHAR *FileName )
 /* Primitive bound box obtaining function.
  * ARGUMENTS:
  *   - pointer to result min-max vectors:
- *       VEC *MinBB, *MaxBB;
+ *       VEC3 *MinBB, *MaxBB;
  *   - vertex attributes array:
  *       ds4VERTEX *V;
  *   - vertex attributes array size:

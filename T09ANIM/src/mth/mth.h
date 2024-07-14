@@ -1,6 +1,6 @@
 /* FILE NAME  : mth.h
  * PROGRAMMER : DS4
- * LAST UPDATE: 20.06.2024
+ * LAST UPDATE: 10.07.2024
  * PURPOSE    : 3D animation project.
  *          Math declaration module.
  */
@@ -131,6 +131,22 @@ __inline VEC4 Vec4Set( FLT X, FLT Y, FLT Z, FLT W )
  
   return v;
 } /* End of 'Vec4Set' function */
+
+/* Setting 4D vector by 3D vector and scalar function.
+ * ARGUMENTS:
+ *   - source 3D vector:
+ *       VEC3 V;
+ *   - scalar component:
+ *       FLT W;
+ * RETURNS:
+ *   (VEC3) result vector.
+ */
+__inline VEC4 Vec4SetVec3( VEC3 V, FLT W )
+{
+  VEC4 v = {V.X, V.Y, V.Z, W};
+ 
+  return v;
+} /* End of 'Vec4SetVec3' function */
 
 /* Setting vector by one component function.
  * ARGUMENTS:
@@ -727,6 +743,35 @@ __inline MATR MatrView( VEC3 Loc, VEC3 At, VEC3 Up1 )
   return m;
 } /* End of 'MatrViev' function */
 
+/* Matrix orthographics projection setup function.
+ * ARGUMENTS:
+ *   - view volume border coordinates:
+ *       FLT Left, Right, Bottom, Top, Near, Far;
+ * RETURNS:
+ *   (MATR) result matrix.
+ */
+__inline MATR MatrOrtho( FLT Left, FLT Right, FLT Bottom, FLT Top, FLT Near, FLT Far )
+{
+  MATR r =
+  {
+    {
+      {2 / (Right - Left), 0, 0, 0},
+      {0, 2 / (Top - Bottom), 0, 0},
+      {0, 0, -2 / (Far - Near), 0},
+      {-(Right + Left) / (Right - Left), -(Top + Bottom) / (Top - Bottom), -(Far + Near) / (Far - Near), 1}
+    }
+  };
+ 
+  return r;
+} /* End of 'MatrOrtho' function */
+
+/* Matrix central (perpspective) projection setup function.
+ * ARGUMENTS:
+ *   - view volume border coordinates:
+ *       FLT Left, Right, Bottom, Top, Near, Far;
+ * RETURNS:
+ *   (MATR) result matrix.
+ */
 __inline MATR MatrFrustum( FLT Left, FLT Right, FLT Bottom, FLT Top, FLT Near, FLT Far )
 {
   MATR r =

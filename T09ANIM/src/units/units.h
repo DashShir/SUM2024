@@ -68,6 +68,13 @@ ds4UNIT * DS4_UnitCreateMountain( VOID );
  */
 ds4UNIT * DS4_UnitCreateTexture( VOID );
 
+/* Floor unit creation function.
+ * ARGUMENTS: None.
+ * RETURNS:
+ *   (ds4UNIT *) pointer to created unit.
+ */
+ds4UNIT * DS4_UnitCreateG3DM( VOID );
+
 #endif /* __units_h_ */
  
 /* END OF 'units.h' FILE */ 

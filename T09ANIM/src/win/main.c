@@ -59,17 +59,17 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
   UpdateWindow(hWnd);
 
   /*** Add units ***/
-  DS4_AnimUnitAdd(DS4_UnitCreateCtrl());
   //DS4_AnimUnitAdd(DS4_UnitCreateIsland(Vec3Set(100, 0, 100)));
   //for (i = 0; i < 1 * 30; i++)
   /*
-  DS4_AnimUnitAdd(DS4_UnitCreateCow(Vec3Set(Rnd1() * 5, 0, Rnd1() * 5)));      
+  DS4_AnimUnitAdd(DS4_UnitCreateCow(Vec3Set(Rnd1() * 5, 0, Rnd1() * 5)));
   DS4_AnimUnitAdd(DS4_UnitCreateFloor(Vec3Set(1, 0, 1)));
   */
   //DS4_AnimUnitAdd(DS4_UnitCreateGrass(Vec3Set(0, 0, 0)));
   /* DS4_AnimUnitAdd(DS4_UnitCreateGrass(Vec3Set(100, 0, 100))); */
-  DS4_AnimUnitAdd(DS4_UnitCreateMountain());
-  DS4_AnimUnitAdd(DS4_UnitCreateTexture());
+  /* DS4_AnimUnitAdd(DS4_UnitCreateMountain()); */
+  DS4_AnimUnitAdd(DS4_UnitCreateG3DM());
+  DS4_AnimUnitAdd(DS4_UnitCreateCtrl());
 
   while (TRUE)
     if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -80,7 +80,14 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
       DispatchMessage(&msg);
     }
     else
-      SendMessage(hWnd, WM_TIMER, 30, 0);
+    {
+      HDC hDC;
+
+      DS4_AnimRender();
+      hDC = GetDC(hWnd);
+      DS4_AnimCopyFrame();
+      ReleaseDC(hWnd, hDC);
+    }
 
   return msg.wParam;
 } /* End of 'WinMain' function */
@@ -105,7 +112,10 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
     return 0;
   case WM_SIZE:
     DS4_AnimResize(LOWORD(lParam), HIWORD(lParam));
-    SendMessage(hWnd, WM_TIMER, 30, 0);
+    DS4_AnimRender();
+    hDC = GetDC(hWnd);
+    DS4_AnimCopyFrame();
+    ReleaseDC(hWnd, hDC);
     return 0;
   case WM_MOUSEWHEEL:
     DS4_MouseWheel += (SHORT)HIWORD(wParam);
@@ -121,12 +131,13 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg,
     DS4_AnimRender();
     /* Copy frame */
     hDC = GetDC(hWnd);
-    DS4_AnimCopyFrame(hDC);
+    DS4_AnimCopyFrame();
     ReleaseDC(hWnd, hDC);
     return 0;
   case WM_PAINT:
     hDC = BeginPaint(hWnd, &ps);
-    DS4_AnimCopyFrame(hDC);
+    DS4_AnimRender();
+    DS4_AnimCopyFrame();
     EndPaint(hWnd, &ps);
     return 0;
   case WM_ERASEBKGND:

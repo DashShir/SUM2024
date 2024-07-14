@@ -28,8 +28,9 @@ MATR
   DS4_RndMatrProj,  /* Projection coordinate system matrix */
   DS4_RndMatrVP; /* Stored (View * Proj) matrix */
 
-
-/* Frame overlay layer device context */
-HDC DS4_hRndFrameDC;
+/* Shaders addon data */
+INT DS4_RndShdAddonI[5];
+FLT DS4_RndShdAddonF[5];
+VEC3 DS4_RndShdAddonV[5];
 
 /* END OF 'rnddata' FILE */

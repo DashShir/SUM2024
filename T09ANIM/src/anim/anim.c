@@ -1,6 +1,6 @@
 /* FILE NAME  : anim.c
  * PROGRAMMER : DS4
- * LAST UPDATE: 29.06.2024
+ * LAST UPDATE: 08.07.2024
  * PURPOSE    : 3D animation project.
  *          Animation set module.
  */
@@ -43,12 +43,10 @@ VOID DS4_AnimResize( INT W, INT H )
 } /* End of 'DS4_AnimResize' function */
 
 /* Animation copying function.
- * ARGUMENTS:
- *   - device context:
- *       HDC hDC;
+ * ARGUMENTS: None.
  * RETURNS: None.
  */
-VOID DS4_AnimCopyFrame( HDC hDC )  
+VOID DS4_AnimCopyFrame( VOID )  
 {
   DS4_RndCopyFrame();
 } /* End of 'DS4_AnimCopyFrame' function */
@@ -89,7 +87,7 @@ VOID DS4_AnimRender( VOID )
   {
     static CHAR Buf[100];
 
-    TextOut(DS4_hRndFrameDC, 8, 8, Buf, sprintf(Buf, "DS4 Anim. FPS: %.3f\tCoordinates: %f", DS4_Anim.FPS));
+    //TextOut(DS4_hRndFrameDC, 8, 8, Buf, sprintf(Buf, "DS4 Anim. FPS: %.3f\tCoordinates: %f", DS4_Anim.FPS));
     /* SetWindowText(DS4_Anim.hWnd, Buf); */
     OldTime = DS4_Anim.GlobalTime;
   }
@@ -124,23 +122,23 @@ VOID FlipFullScreen( HWND hWnd )
 {
   static BOOL IsFullScreen = FALSE; /* current mode */
   static RECT SaveRC;               /* saved size */
- 
+
   if (!IsFullScreen)
   {
     RECT rc;
     HMONITOR hmon;
     MONITORINFOEX moninfo;
- 
+
     /* saving old screen size */
     GetWindowRect(hWnd, &SaveRC);
  
     /* determining monitor where the window is */
     hmon = MonitorFromWindow(hWnd, MONITOR_DEFAULTTONEAREST);
- 
+
     /* get information for monitor */
     moninfo.cbSize = sizeof(moninfo);
     GetMonitorInfo(hmon, (MONITORINFO *)&moninfo);
- 
+
     /* go to full screen */
     /* for one monitor:
     rc.left = 0;

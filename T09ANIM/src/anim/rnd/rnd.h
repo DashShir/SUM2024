@@ -1,6 +1,6 @@
-/* FILE NAME  : rnd.h         
+/* FILE NAME  : rnd.h
  * PROGRAMMER : DS4
- * LAST UPDATE: 28.06.2024
+ * LAST UPDATE: 06.07.2024
  * PURPOSE    : 3D animation project.
  *          Render declaration module.
  */
@@ -38,8 +38,16 @@ extern VEC3
   DS4_RndCamRight,       /* Camera right direction */
   DS4_RndCamUp;          /* Camera up direction */
 
-/* Frame overlay layer device context */
-extern HDC DS4_hRndFrameDC;
+/* Shaders addon data */
+extern INT DS4_RndShdAddonI[5];
+extern FLT DS4_RndShdAddonF[5];
+extern VEC3 DS4_RndShdAddonV[5];
+
+/* UBO buffers distribution */
+#define DS4_RND_UBO_BIND_CAMERA   0
+#define DS4_RND_UBO_BIND_SYNC     1
+#define DS4_RND_UBO_BIND_MATERIAL 2
+#define DS4_RND_UBO_BIND_PRIM     3
 
 /* Render initialization function.
  * ARGUMENTS:
@@ -255,7 +263,7 @@ BOOL DS4_RndPrimLoad( ds4PRIM *Pr, CHAR *FileName );
 /* Primitive bound box obtaining function.
  * ARGUMENTS:
  *   - pointer to result min-max vectors:
- *       VEC *MinBB, *MaxBB;
+ *       VEC3 *MinBB, *MaxBB;
  *   - vertex attributes array:
  *       ds4VERTEX *V;
  *   - vertex attributes array size:
@@ -351,6 +359,58 @@ BOOL DS4_RndGridCreateSphere( ds4GRID *G, FLT R, INT W, INT H );
  *   (BOOL) TRUE if success, FALSE otherwise.
  */
 BOOL DS4_RndGridCreateTorus( ds4GRID *G, FLT RIn, FLT ROut, INT W, INT H );
+
+/***
+ * Primitives collection handle function group
+ ***/
+
+/* Primitive collection data type */
+typedef struct tagds4PRIMS
+{
+  INT NumOfPrims; /* Number of primitives in array */  
+  ds4PRIM *Prims; /* Array of primitives */
+  MATR Trans;     /* Common transformation matrix */
+} ds4PRIMS;
+
+/* Create array of primitives function.
+ * ARGUMENTS:
+ *   - pointer to primitives structure:
+ *       ds4PRIMS *Prs;
+ *   - number of primitives to be add:
+ *       INT NumOfPrims;
+ * RETURNS:
+ *   (BOOL) TRUE if successful, FALSE otherwise.
+ */
+BOOL DS4_RndPrimsCreate( ds4PRIMS *Prs, INT NumOfPrims );
+
+/* Delete array of primitives function.
+ * ARGUMENTS:
+ *   - pointer to primitives structure:
+ *       vg4PRIMS *Prs;
+ * RETURNS: None.
+ */
+VOID DS4_RndPrimsFree( ds4PRIMS *Prs );
+
+/* Draw array of primitives function.
+ * ARGUMENTS:
+ *   - pointer to primitives structure:
+ *       ds4PRIMS *Prs;
+ *   - global transformation matrix:
+ *       MATR World;
+ * RETURNS: None.
+ */
+VOID DS4_RndPrimsDraw( ds4PRIMS *Prs, MATR World );
+
+/* Load array of primitives from .G3DM file function.
+ * ARGUMENTS:
+ *   - pointer to primitives structure:
+ *       ds4PRIMS *Prs;
+ *   - file name:
+ *       CHAR *FileName;
+ * RETURNS:
+ *   (BOOL) TRUE if successful, FALSE otherwise.
+ */
+BOOL DS4_RndPrimsLoad( ds4PRIMS *Prs, CHAR *FileName );
 
 #endif /* __rnd_h_ */
 
